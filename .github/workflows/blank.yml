@@ -25,7 +25,7 @@ jobs:
               repo: context.repo.repo,
             });
 
-            const comments = github.paginate(opts);
+            const comments = await github.paginate(opts);
 
             for (const comment of comments) {
               console.log(comment);
