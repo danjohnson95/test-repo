@@ -6,17 +6,16 @@ on:
     - 'http/**/*'
 
 jobs:
-  postReminderComment:
+  remind:
     runs-on: ubuntu-latest
+    name: Remind author
 
     steps:
       - uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const commentBody = `:eyes: It looks like you're modifying API files. Don't forget:<br>
-            - [ ] Update the SDK
-            `;
+            const commentBody = require(`${process.env.GITHUB_WORKSPACE}/.github/ApiChangeReminder.md`);
 
             // Have we already commented on this PR?
             const opts = github.issues.listComments.endpoint.merge({
@@ -29,8 +28,8 @@ jobs:
 
             for (const comment of comments) {
               if (comment.user.login === "github-actions[bot]" && comment.body === commentBody) {
-                console.log('already posted')
-                return
+                core.info('A reminder has already been posted in this PR');
+                return;
               }
             }
 
