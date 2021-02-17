@@ -15,9 +15,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const commentBody = `:eyes: It looks like you're modifying API files. Don't forget:<br>
-            - [ ] Update the SDK
-            `;
+            const commentBody = require(`${process.env.GITHUB_WORKSPACE}/.github/ApiChangeReminder.md`);
 
             // Have we already commented on this PR?
             const opts = github.issues.listComments.endpoint.merge({
