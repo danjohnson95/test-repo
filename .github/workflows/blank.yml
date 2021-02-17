@@ -14,9 +14,28 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            const commentBody = `:eyes: It looks like you're modifying API files. Don't forget:<br>
+            - [ ] Update the SDK
+            `;
+
+            // Have we already commented on this PR?
+            const comments = await github.issues.comments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            for (const comment of comments) {
+              console.log(comment);
+              if (comment.user.login === "github-actions" && comment.body === commentBodu) {
+                console.log('already posted')
+                return
+              }
+            }
+
             await github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Looks like you\'re modifying API files'
-            })
+              body: commentBody,
+            });
