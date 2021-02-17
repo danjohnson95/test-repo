@@ -19,11 +19,13 @@ jobs:
             `;
 
             // Have we already commented on this PR?
-            const comments = await github.issues.comments({
+            const opts = github.issues.listComments.endpoint.merge({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
+
+            const comments = github.paginate(opts);
 
             for (const comment of comments) {
               console.log(comment);
